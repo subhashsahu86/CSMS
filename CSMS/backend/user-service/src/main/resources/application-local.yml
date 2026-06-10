@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/user_db?options=-c%20TimeZone=UTC
+    username: user_user
+    password: user_password

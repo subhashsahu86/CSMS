@@ -1,0 +1,56 @@
+name: Deploy Dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Docker image tag to deploy
+        required: true
+        default: latest
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  deploy-dev:
+    name: Deploy to Dev VM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy deployment files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_SSH_USER }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          source: infrastructure/deploy/docker-compose.dev.yml
+          target: ${{ secrets.DEV_DEPLOY_DIR }}
+          strip_components: 2
+
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          IMAGE_REGISTRY: ghcr.io
+          IMAGE_OWNER: ${{ github.repository_owner }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          AUTH_DB_PASSWORD: ${{ secrets.AUTH_DB_PASSWORD }}
+          USER_DB_PASSWORD: ${{ secrets.USER_DB_PASSWORD }}
+          ADMISSION_DB_PASSWORD: ${{ secrets.ADMISSION_DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_SSH_USER }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          envs: IMAGE_REGISTRY,IMAGE_OWNER,IMAGE_TAG,AUTH_DB_PASSWORD,USER_DB_PASSWORD,ADMISSION_DB_PASSWORD,JWT_SECRET,CORS_ALLOWED_ORIGINS
+          script: |
+            cd "${{ secrets.DEV_DEPLOY_DIR }}"
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            docker compose -f docker-compose.dev.yml pull
+            docker compose -f docker-compose.dev.yml up -d
+            docker image prune -f

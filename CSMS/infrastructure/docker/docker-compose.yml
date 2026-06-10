@@ -1,0 +1,41 @@
+services:
+  auth-postgres:
+    image: postgres:16
+    container_name: auth-postgres
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+
+  user-postgres:
+    image: postgres:16
+    container_name: user-postgres
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - user_postgres_data:/var/lib/postgresql/data
+
+  admission-postgres:
+    image: postgres:16
+    container_name: admission-postgres
+    environment:
+      POSTGRES_DB: admission_db
+      POSTGRES_USER: admission_user
+      POSTGRES_PASSWORD: admission_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - admission_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  auth_postgres_data:
+  user_postgres_data:
+  admission_postgres_data:

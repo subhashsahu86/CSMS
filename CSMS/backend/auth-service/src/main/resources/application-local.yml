@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth_db?options=-c%20TimeZone=UTC
+    username: auth_user
+    password: auth_password
+
+security:
+  bootstrap-admin:
+    enabled: true

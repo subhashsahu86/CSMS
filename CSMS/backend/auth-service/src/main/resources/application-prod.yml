@@ -1,0 +1,3 @@
+security:
+  bootstrap-admin:
+    enabled: false

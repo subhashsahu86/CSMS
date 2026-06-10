@@ -1,0 +1,60 @@
+CREATE TABLE auth_users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE,
+    phone_number VARCHAR(30),
+    password_hash VARCHAR(255) NOT NULL,
+    account_status VARCHAR(30) NOT NULL,
+    must_change_password BOOLEAN NOT NULL DEFAULT TRUE,
+    failed_login_attempts INTEGER NOT NULL DEFAULT 0,
+    last_login_at TIMESTAMP,
+    created_by VARCHAR(50),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE roles (
+    id UUID PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_roles (
+    user_id UUID NOT NULL REFERENCES auth_users(id) ON DELETE CASCADE,
+    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
+CREATE TABLE refresh_tokens (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES auth_users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    revoked BOOLEAN NOT NULL DEFAULT FALSE,
+    device_info VARCHAR(255),
+    ip_address VARCHAR(100),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE password_reset_tokens (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES auth_users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE username_sequences (
+    user_type VARCHAR(20) NOT NULL,
+    admission_year INTEGER NOT NULL,
+    next_value BIGINT NOT NULL,
+    PRIMARY KEY (user_type, admission_year)
+);
+
+INSERT INTO roles (id, name) VALUES
+    ('00000000-0000-0000-0000-000000000001', 'ADMIN'),
+    ('00000000-0000-0000-0000-000000000002', 'STUDENT'),
+    ('00000000-0000-0000-0000-000000000003', 'TEACHER'),
+    ('00000000-0000-0000-0000-000000000004', 'PARENT'),
+    ('00000000-0000-0000-0000-000000000005', 'STAFF');

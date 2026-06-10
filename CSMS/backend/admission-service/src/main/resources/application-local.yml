@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/admission_db?options=-c%20TimeZone=UTC
+    username: admission_user
+    password: admission_password
