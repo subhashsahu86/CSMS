@@ -23,13 +23,13 @@ jobs:
       matrix:
         service:
           - name: auth-service
-            path: backend/auth-service
+            path: CSMS/backend/auth-service
           - name: user-service
-            path: backend/user-service
+            path: CSMS/backend/user-service
           - name: gateway-service
-            path: backend/gateway-service
+            path: CSMS/backend/gateway-service
           - name: admission-service
-            path: backend/admission-service
+            path: CSMS/backend/admission-service
 
     steps:
       - name: Checkout repository

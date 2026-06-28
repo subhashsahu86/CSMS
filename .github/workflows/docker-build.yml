@@ -31,16 +31,16 @@ jobs:
       matrix:
         service:
           - name: auth-service
-            path: backend/auth-service
+            path: CSMS/backend/auth-service
             port: 8082
           - name: user-service
-            path: backend/user-service
+            path: CSMS/backend/user-service
             port: 8083
           - name: gateway-service
-            path: backend/gateway-service
+            path: CSMS/backend/gateway-service
             port: 8080
           - name: admission-service
-            path: backend/admission-service
+            path: CSMS/backend/admission-service
             port: 8084
 
     steps:
