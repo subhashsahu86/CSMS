@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jre
 
-WORKDIR /app
+WORKDIR /app/CSMS
 
 COPY target/admission-service-0.0.1-SNAPSHOT.jar app.jar
 
