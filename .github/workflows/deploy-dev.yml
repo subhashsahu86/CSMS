@@ -31,6 +31,7 @@ jobs:
           source: infrastructure/deploy/docker-compose.dev.yml
           target: ${{ secrets.DEV_DEPLOY_DIR }}
           strip_components: 2
+          command_timeout: 10m    # Add this specific flag to help Appleboy routes traverse Cloudflare:
 
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1.2.0
