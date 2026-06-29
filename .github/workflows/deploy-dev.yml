@@ -28,10 +28,9 @@ jobs:
           host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_SSH_USER }}
           key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
-          source: infrastructure/deploy/docker-compose.dev.yml
+          source: CSMS/infrastructure/deploy/docker-compose.dev.yml
           target: ${{ secrets.DEV_DEPLOY_DIR }}
           strip_components: 2
-          command_timeout: 10m    # Add this specific flag to help Appleboy routes traverse Cloudflare:
 
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@v1.2.0
